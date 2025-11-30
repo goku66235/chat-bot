@@ -1,0 +1,376 @@
+/* 🌈 Body gradient */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #f0f4f9, #ffffff);
+  overflow-x: hidden;
+  background-attachment: fixed;
+}
+
+/* Main Layout */
+.main {
+  flex: 1;
+  min-height: 100vh;   /* make sure it covers full viewport */
+  background: transparent; /* do NOT override body gradient */
+  margin-left: 250px;   /* leave space for sidebar */
+  padding: 25px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  position: relative;
+  box-sizing: border-box;
+}
+
+/* Ensure all inner containers are transparent */
+.main-container,
+.result-section,
+.main-bottom {
+  background: transparent;
+}
+
+
+/* 🔝 Top Nav */
+.main .nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 22px;
+  color: #585858;
+  margin-bottom: 25px;
+}
+
+.main .nav p {
+  font-weight: 600;
+  color: black;
+}
+
+/* 👤 User Icon */
+.main .nav img {
+  position: fixed;
+  top: 22px;
+  right: 35px;
+  width: 4.5rem;
+  height: 4.5rem;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.main .nav img:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* Main Container */
+.main-container {
+  max-width: 900px;
+  margin-top: -80px;
+  margin-left: 114px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  flex: 1;
+}
+
+/* 👋 Greeting */
+.main .greet {
+  margin: 10px 0;
+  font-size: 56px;
+  color: #c4c7c5;
+  font-weight: 300;
+  padding: 10px;
+}
+
+.greet p span {
+  background: -webkit-linear-gradient(46deg, #3ca4ba, #930c0e);
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 700;
+}
+.greet p {
+  font-weight: 500;
+}
+
+.main .greet span {
+  background: -webkit-linear-gradient(46deg, #4b90ff, #d3f376);
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* 🃏 Cards */
+.cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  justify-content: center;
+}
+
+.main .card {
+  height: 200px;
+  width: 200px;
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 16px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
+  color: #fff;
+}
+
+.main .card img {
+  width: 35px;
+  height: 35px;
+  padding: 5px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  align-self: flex-end;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease;
+  background-color: yellow;
+}
+
+.main .card p {
+  font-size: 17px;
+  font-weight: 500;
+  color: #fff;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.4);
+}
+
+/* Hover */
+.main .card:hover {
+  transform: translateY(-6px) scale(1.04);
+  background: rgba(255, 255, 255, 0.25);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
+}
+
+.main .card:hover img {
+  transform: scale(1.2);
+}
+
+/* 💬 Chat Result Section */
+.result-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 900px;
+  overflow-y: auto;
+  padding-bottom: 10px;
+}
+
+/* Chat bubbles */
+.result-title,
+.result-data {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.result-title img,
+.result-data img {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+}
+
+/* 🗣️ User Message */
+.result-title p {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  padding: 10px 14px;
+  border-radius: 18px;
+  font-size: 15px;
+  line-height: 1.4;
+  max-width: 80%;
+  word-break: break-word;
+  backdrop-filter: blur(10px);
+}
+
+/* 🤖 AI Reply */
+.result-data p {
+  background-color: rgba(0, 0, 0, 0.2);
+  color: #ffffff;
+  padding: 12px 16px;
+  border-radius: 18px;
+  font-size: 18px;
+  line-height: 1.6;
+  max-width: 80%;
+  word-break: break-word;
+  backdrop-filter: blur(10px);
+}
+
+/* Bold text inside replies */
+.result-data b {
+  font-weight: 700;
+  font-size: 20px;
+}
+
+/* Typing dots */
+.dots {
+  display: inline-block;
+  margin-left: 5px;
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  0%, 20% { opacity: 0; }
+  50% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* Bottom Section */
+.main-bottom {
+  width: 100%;
+  max-width: 900px;
+  margin: 20px auto 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+/* 🔍 Search Box */
+.Search-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 6px 12px;
+  border-radius: 50px;
+  background-color: #f5f5f5;
+  box-sizing: border-box;
+}
+
+.Search-box input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 16px;
+  padding: 8px 12px;
+  border-radius: 50px;
+  background: transparent;
+}
+
+.Search-box div {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.Search-box img {
+  width: 24px;
+  cursor: pointer;
+}
+
+.bottom-info {
+  font-size: 13px;
+  text-align: center;
+  font-weight: 400;
+  margin-top: 5px;
+  color: white;
+}
+
+/* 📱 Responsive (Tablets & Phones) */
+@media (max-width: 1024px) {
+  .main {
+    margin-left: 200px;
+    padding: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .main {
+    margin-left: 0;
+    padding: 15px;
+  }
+
+  .main .nav {
+    justify-content: space-between;
+  }
+
+  .main .nav img {
+    position: static;
+    width: 3rem;
+    height: 3rem;
+    margin-left: auto;
+  }
+
+  .main .greet {
+    font-size: 36px;
+    text-align: center;
+  }
+
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 12px;
+  }
+
+  .main .card {
+    height: 160px;
+    font-size: 14px;
+  }
+
+  .Search-box {
+    flex-direction: row;
+    padding: 6px 10px;
+  }
+
+  .Search-box input {
+    font-size: 14px;
+  }
+
+  .bottom-info {
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 500px) {
+  .main {
+    margin-left: 0;
+    padding: 10px;
+  }
+
+  .main .nav {
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .main .nav p {
+    font-size: 18px;
+    text-align: left;
+  }
+
+  .main .nav img {
+    width: 2.8rem;
+    height: 2.8rem;
+  }
+
+  .main .greet {
+    font-size: 28px;
+    text-align: center;
+  }
+
+  .cards {
+    grid-template-columns: 1fr;
+  }
+
+  .Search-box {
+    width: 100%;
+    border-radius: 30px;
+  }
+
+  .Search-box input {
+    font-size: 13px;
+  }
+
+  .bottom-info {
+    font-size: 10px;
+  }
+}

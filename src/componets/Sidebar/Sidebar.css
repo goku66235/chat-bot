@@ -1,0 +1,174 @@
+.sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100vh;
+  width: 250px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  backdrop-filter: blur(10px);
+  padding: 20px 12px;
+  box-shadow: inset -3px 0 5px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  transition: left 0.3s ease, width 0.3s ease, padding 0.3s ease;
+  z-index: 100;
+  background-attachment: fixed;
+}
+
+/* Default expanded */
+.sidebar {
+  flex: 0 0 250px;
+}
+
+/* Collapsed (desktop toggle) */
+.sidebar.collapsed {
+  width: 80px;
+  padding: 20px 8px;
+}
+
+/* Icons */
+.sidebar img {
+  width: 20px;
+  cursor: pointer;
+}
+
+.sidebar .menu {
+  display: block;
+  margin-left: 10px;
+}
+
+/* New chat button */
+.sidebar .newchat {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: #f2f2f9e0;
+  padding: 10px 14px;
+  border-radius: 50px;
+  cursor: pointer;
+  color: gray;
+  margin-top: 50px;
+  transition: all 0.3s ease;
+}
+
+.sidebar .newchat:hover {
+  background-color: #e6ecf3;
+}
+
+/* Recent chats */
+.sidebar .recent {
+  display: flex;
+  flex-direction: column;
+  margin-top: 20px;
+  flex-grow: 1;
+  animation: fadeIn 1.5s;
+}
+
+.sidebar .recent-title {
+  margin: 20px 0 10px;
+  color: #555;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.recent-entry {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 8px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  width: 100%;
+}
+
+.recent-entry:hover {
+  background-color: #dde4ee;
+}
+
+/* Bottom section */
+.sidebar .bottom {
+  border-top: 1px solid #d0d7e3;
+  margin-top: 10px;
+  position: relative;
+  bottom: 33px;
+}
+
+.sidebar .bottom-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.sidebar .bottom-item:hover {
+  background-color: #dde4ee;
+}
+
+/* Collapsed state hides text */
+.sidebar.collapsed .newchat p,
+.sidebar.collapsed .recent,
+.sidebar.collapsed .recent-title,
+.sidebar.collapsed .bottom-item p {
+  display: none;
+}
+
+.sidebar.collapsed .newchat,
+.sidebar.collapsed .bottom-item {
+  justify-content: center;
+}
+
+/* ========================= 📱 MOBILE RESPONSIVE ========================= */
+@media (max-width: 768px) {
+  /* Hide sidebar off-screen by default */
+  .sidebar {
+    left: -250px;
+    width: 250px;
+    padding: 20px 12px;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    backdrop-filter: blur(10px);
+    transition: left 0.3s ease;
+    z-index: 200;
+  }
+
+  /* When sidebar is opened */
+  .sidebar.active {
+    left: 0;
+  }
+
+  /* Keep bottom items visible */
+  .sidebar .bottom {
+    bottom: 10px;
+    padding-bottom: 20px;
+  }
+
+  /* Hide scrollbar for cleaner UI */
+  .sidebar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Hide text in collapsed view */
+  .sidebar.collapsed .newchat p,
+  .sidebar.collapsed .recent,
+  .sidebar.collapsed .recent-title,
+  .sidebar.collapsed .bottom-item p {
+    display: none;
+  }
+
+  .sidebar.collapsed .newchat,
+  .sidebar.collapsed .bottom-item {
+    justify-content: center;
+  }
+
+  .sidebar img {
+    width: 22px;
+  }
+}
