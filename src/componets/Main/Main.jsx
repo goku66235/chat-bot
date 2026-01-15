@@ -4,6 +4,7 @@ import "./Main.css";
 import { Context } from "../../context/Context";
 
 
+
 // Example: inside Navbar.jsx or top of Main.jsx
 const toggleSidebar = () => {
   document.querySelector('.sidebar').classList.toggle('active');

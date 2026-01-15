@@ -1,5 +1,5 @@
 import { createContext, useState } from "react";
-import { main } from "../config/gemini"; // your AI API call
+import { main } from "../config/gemini";
 
 const Context = createContext();
 
@@ -11,26 +11,34 @@ const ContextProvider = ({ children }) => {
   const [resultData, setResultData] = useState([]);
 
   const onsent = async (prompt) => {
-    if (!prompt?.trim()) return;
+    const finalPrompt = prompt || input;
+
+    if (!finalPrompt?.trim()) return;
 
     setShowResult(true);
     setLoading(true);
 
-    setResultData((prev) => [...prev, { type: "user", text: prompt }]);
-    setPrevPrompts((prev) => [...prev, prompt]);
+    // User message
+    setResultData((prev) => [
+      ...prev,
+      { type: "user", text: finalPrompt },
+    ]);
+
+    setPrevPrompts((prev) => [...prev, finalPrompt]);
 
     try {
-      const reply = await main(prompt); // your API call
+      const reply = await main(finalPrompt);
 
-      // simulate typing effect line by line
-      const lines = reply.split("\n");
-      let typed = "";
-      for (let i = 0; i < lines.length; i++) {
-        typed += lines[i] + "\n";
-      }
-      setResultData((prev) => [...prev, { type: "ai", text: typed }]);
+      // AI message
+      setResultData((prev) => [
+        ...prev,
+        { type: "ai", text: reply },
+      ]);
     } catch (err) {
-      setResultData((prev) => [...prev, { type: "ai", text: "Error generating response." }]);
+      setResultData((prev) => [
+        ...prev,
+        { type: "ai", text: "❌ Error getting response" },
+      ]);
     } finally {
       setLoading(false);
       setInput("");
@@ -41,6 +49,7 @@ const ContextProvider = ({ children }) => {
     setInput("");
     setResultData([]);
     setShowResult(false);
+    setPrevPrompts([]);
   };
 
   return (
@@ -49,11 +58,8 @@ const ContextProvider = ({ children }) => {
         input,
         setInput,
         resultData,
-        setResultData,
         showResult,
-        setShowResult,
         prevPrompt,
-        setPrevPrompts,
         onsent,
         resetChat,
         loading,
@@ -64,5 +70,5 @@ const ContextProvider = ({ children }) => {
   );
 };
 
-export default ContextProvider; // ✅ default export
+export default ContextProvider;
 export { Context };

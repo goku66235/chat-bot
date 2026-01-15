@@ -1,18 +1,39 @@
-import { GoogleGenAI } from "@google/genai";
+const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
 
-const ai = new GoogleGenAI({
-  apiKey: "AIzaSyDSvwTeEVilz8Sz-slDYEgMjNmigUy9A30",
-});
+const BASE_URL =
+  `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`;
 
-export async function main(prompt) {
+export const main = async (prompt) => {
+  if (!prompt) return "No prompt provided.";
+
   try {
-    const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
-      contents: prompt,
+    const res = await fetch(BASE_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        contents: [
+          {
+            parts: [{ text: prompt }],
+          },
+        ],
+      }),
     });
-    return response.text;
-  } catch (err) {
-    console.error("Gemini API Error:", err);
-    return "Error generating response.";
+
+    if (!res.ok) {
+      const err = await res.text();
+      throw new Error(err);
+    }
+
+    const data = await res.json();
+
+    return (
+      data?.candidates?.[0]?.content?.parts?.[0]?.text ||
+      "No response"
+    );
+  } catch (error) {
+    console.error("Gemini Error:", error);
+    return "❌ Error generating response";
   }
-}
+};
