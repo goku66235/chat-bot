@@ -1,5 +1,4 @@
 import { createContext, useState } from "react";
-import { main } from "../config/gemini";
 
 const Context = createContext();
 
@@ -18,7 +17,7 @@ const ContextProvider = ({ children }) => {
     setShowResult(true);
     setLoading(true);
 
-    // User message
+    // Add user message
     setResultData((prev) => [
       ...prev,
       { type: "user", text: finalPrompt },
@@ -27,12 +26,24 @@ const ContextProvider = ({ children }) => {
     setPrevPrompts((prev) => [...prev, finalPrompt]);
 
     try {
-      const reply = await main(finalPrompt);
+      // 🔥 Call your backend instead of gemini.js
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/chat`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ message: finalPrompt }),
+        }
+      );
 
-      // AI message
+      const data = await response.json();
+
+      // Add AI response
       setResultData((prev) => [
         ...prev,
-        { type: "ai", text: reply },
+        { type: "ai", text: data.reply },
       ]);
     } catch (err) {
       setResultData((prev) => [
