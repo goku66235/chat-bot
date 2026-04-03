@@ -4,29 +4,23 @@ const Context = createContext();
 
 const ContextProvider = ({ children }) => {
   const [input, setInput] = useState("");
-  const [prevPrompt, setPrevPrompts] = useState([]);
   const [showResult, setShowResult] = useState(false);
   const [loading, setLoading] = useState(false);
   const [resultData, setResultData] = useState([]);
 
   const onsent = async (prompt) => {
     const finalPrompt = prompt || input;
-
-    if (!finalPrompt?.trim()) return;
+    if (!finalPrompt) return;
 
     setShowResult(true);
     setLoading(true);
 
-    // ✅ Add user message
     setResultData((prev) => [
       ...prev,
       { type: "user", text: finalPrompt },
     ]);
 
-    setPrevPrompts((prev) => [...prev, finalPrompt]);
-
     try {
-      // ✅ CALL BACKEND (same server - Render full stack)
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: {
@@ -35,40 +29,22 @@ const ContextProvider = ({ children }) => {
         body: JSON.stringify({ message: finalPrompt }),
       });
 
-      // ✅ Handle HTTP errors
-      if (!response.ok) {
-        throw new Error("Server error");
-      }
-
       const data = await response.json();
 
-      // ✅ Add AI response
       setResultData((prev) => [
         ...prev,
         { type: "ai", text: data.reply },
       ]);
 
     } catch (err) {
-      console.error("Frontend Error:", err);
-
       setResultData((prev) => [
         ...prev,
-        {
-          type: "ai",
-          text: "❌ Failed to connect to server. Try again later.",
-        },
+        { type: "ai", text: "Server error" },
       ]);
     } finally {
       setLoading(false);
       setInput("");
     }
-  };
-
-  const resetChat = () => {
-    setInput("");
-    setResultData([]);
-    setShowResult(false);
-    setPrevPrompts([]);
   };
 
   return (
@@ -78,9 +54,7 @@ const ContextProvider = ({ children }) => {
         setInput,
         resultData,
         showResult,
-        prevPrompt,
         onsent,
-        resetChat,
         loading,
       }}
     >
