@@ -6,28 +6,32 @@ import { GoogleGenAI } from "@google/genai";
 dotenv.config();
 
 const app = express();
-app.use(cors());
+
+// ✅ Allow frontend (Netlify) to access backend
+app.use(cors({
+  origin: "*", // later you can restrict to your Netlify URL
+}));
+
 app.use(express.json());
 
-const PORT = 5000;
-
-// 🔐 Initialize Gemini
+// 🔐 Gemini setup
 const ai = new GoogleGenAI({
   apiKey: process.env.GEMINI_API_KEY,
 });
 
+// 🧠 API Route
 app.post("/api/chat", async (req, res) => {
   try {
     const { message } = req.body;
 
     if (!message || !message.trim()) {
       return res.status(400).json({
-        reply: "❌ Message is required.",
+        reply: "❌ Message is required",
       });
     }
 
     const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
+      model: "gemini-2.0-flash",
       contents: message,
     });
 
@@ -38,7 +42,7 @@ app.post("/api/chat", async (req, res) => {
   } catch (error) {
     console.error("🔥 Backend Error:", error);
 
-    // ✅ Handle billing / quota errors
+    // ✅ Friendly message for quota/billing issue
     if (
       error.status === 429 ||
       error.message?.includes("quota") ||
@@ -46,16 +50,23 @@ app.post("/api/chat", async (req, res) => {
     ) {
       return res.status(503).json({
         reply:
-          "😂 Backend ke paas billing ka paisa nahi hai. AI service unavailable (quota exceeded).",
+          "😂 Backend ke paas billing ka paisa nahi hai. Try again later.",
       });
     }
 
-    // Other errors
     res.status(500).json({
-      reply: "❌ Backend error occurred. Please try again later.",
+      reply: "❌ Server error. Please try again.",
     });
   }
 });
+
+// ✅ Health check (IMPORTANT for Render)
+app.get("/", (req, res) => {
+  res.send("Backend is running 🚀");
+});
+
+// ✅ Use Render port
+const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
