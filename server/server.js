@@ -1,30 +1,38 @@
 import express from "express";
 import cors from "cors";
+import dotenv from "dotenv";
 import { GoogleGenAI } from "@google/genai";
 import path from "path";
 import { fileURLToPath } from "url";
 
+dotenv.config();
+
 const app = express();
 
-// ✅ FIX __dirname (VERY IMPORTANT)
+// ✅ fix __dirname
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// ✅ middleware
 app.use(cors());
 app.use(express.json());
 
-// 🔐 API KEY (put yours)
+// 🔐 USE ENV KEY
+if (!process.env.GEMINI_API_KEY) {
+  console.error("❌ GEMINI_API_KEY missing");
+}
+
 const ai = new GoogleGenAI({
-  apiKey: "PASTE_YOUR_API_KEY_HERE",
+  apiKey: process.env.GEMINI_API_KEY,
 });
 
-// ✅ API
+// ✅ API FIRST
 app.post("/api/chat", async (req, res) => {
   try {
     const { message } = req.body;
 
-    if (!message) {
-      return res.json({ reply: "Message is required" });
+    if (!message || !message.trim()) {
+      return res.json({ reply: "❌ Message is required" });
     }
 
     const result = await ai.models.generateContent({
@@ -32,26 +40,25 @@ app.post("/api/chat", async (req, res) => {
       contents: message,
     });
 
-    res.json({ reply: result.text });
+    res.json({ reply: result.text || "No response" });
 
   } catch (error) {
-    console.error(error);
+    console.error("🔥 Backend Error:", error);
+
     res.json({
-      reply: "Error: API not working or quota finished",
+      reply: "❌ API error / quota finished",
     });
   }
 });
 
-
-// ✅ 🔥 SERVE FRONTEND (THIS WAS BREAKING)
+// ✅ SERVE FRONTEND
 app.use(express.static(path.join(__dirname, "../dist")));
 
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "../dist/index.html"));
 });
 
-
-// 🚀 START SERVER
+// ✅ START
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
