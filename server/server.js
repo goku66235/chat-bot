@@ -6,13 +6,14 @@ import { fileURLToPath } from "url";
 
 const app = express();
 
-// fix __dirname
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+// ✅ FIX __dirname (VERY IMPORTANT)
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 app.use(cors());
 app.use(express.json());
 
-// 🔐 put your API key here
+// 🔐 API KEY (put yours)
 const ai = new GoogleGenAI({
   apiKey: "PASTE_YOUR_API_KEY_HERE",
 });
@@ -34,17 +35,25 @@ app.post("/api/chat", async (req, res) => {
     res.json({ reply: result.text });
 
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.json({
       reply: "Error: API not working or quota finished",
     });
   }
 });
 
-// ✅ Serve React build
+
+// ✅ 🔥 SERVE FRONTEND (THIS WAS BREAKING)
 app.use(express.static(path.join(__dirname, "dist")));
 
-// ✅ Catch all routes (VERY IMPORTANT)
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "dist", "index.html"));
+});
+
+
+// 🚀 START SERVER
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => {
+  console.log("Server running on port " + PORT);
 });
