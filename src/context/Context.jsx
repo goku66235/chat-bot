@@ -17,7 +17,7 @@ const ContextProvider = ({ children }) => {
     setShowResult(true);
     setLoading(true);
 
-    // Add user message
+    // ✅ Add user message
     setResultData((prev) => [
       ...prev,
       { type: "user", text: finalPrompt },
@@ -26,29 +26,37 @@ const ContextProvider = ({ children }) => {
     setPrevPrompts((prev) => [...prev, finalPrompt]);
 
     try {
-      // 🔥 Call your backend instead of gemini.js
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/chat`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ message: finalPrompt }),
-        }
-      );
+      // ✅ CALL BACKEND (same server - Render full stack)
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ message: finalPrompt }),
+      });
+
+      // ✅ Handle HTTP errors
+      if (!response.ok) {
+        throw new Error("Server error");
+      }
 
       const data = await response.json();
 
-      // Add AI response
+      // ✅ Add AI response
       setResultData((prev) => [
         ...prev,
         { type: "ai", text: data.reply },
       ]);
+
     } catch (err) {
+      console.error("Frontend Error:", err);
+
       setResultData((prev) => [
         ...prev,
-        { type: "ai", text: "❌ Error getting response" },
+        {
+          type: "ai",
+          text: "❌ Failed to connect to server. Try again later.",
+        },
       ]);
     } finally {
       setLoading(false);
